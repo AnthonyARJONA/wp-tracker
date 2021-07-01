@@ -35,13 +35,20 @@ function wp_tracker_autoloader( $class_called ) {
 
     $classes = [
         'WP_Tracker_setup',
+        'WP_Tracker_database',
     ];
 
     if ( in_array($class_called, $classes,true)) {
-        require_once('src/classes/' . strtolower($class_called) . '.php');
+        require_once(WP_TRACKER_PATH . 'src/classes/' . $class_called . '.php');
     }
 }
 spl_autoload_register('wp_tracker_autoloader');
+
+if (is_admin()) {
+    WP_Tracker_setup::init();
+    return;
+}
+
 
 // uninstall hook
 register_uninstall_hook(

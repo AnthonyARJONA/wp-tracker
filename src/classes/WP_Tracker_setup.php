@@ -8,8 +8,10 @@ if(!defined( 'ABSPATH')) {
 class WP_Tracker_setup
 {
 
-    public function init() {}
-    public function create_tables() {}
+    public static function init() {
+        $database = new WP_Tracker_database();
+        $database->init();
+    }
 
     public function uninstall() {}
 
