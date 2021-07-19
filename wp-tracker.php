@@ -34,12 +34,13 @@ if (!version_compare(phpversion(), WP_TRACKER_REQUIRED_PHP_VERSION, ">=")) {
 function wp_tracker_autoloader( $class_called ) {
 
     $classes = [
-        'WP_Tracker_setup',
+        'WP_Tracker_Setup',
         'WP_Tracker_Helper',
-        'WP_Tracker_database',
+        'WP_Tracker_Database',
         'WP_Tracker_Curl',
         'WP_Tracker_Api',
         'WP_Tracker_Client',
+        'WP_Tracker_Track',
     ];
 
     if ( in_array($class_called, $classes,true)) {
@@ -48,27 +49,14 @@ function wp_tracker_autoloader( $class_called ) {
 }
 spl_autoload_register('wp_tracker_autoloader');
 
-
-function wp_tracker_autoloader_register_menu() {
-    add_menu_page('WP Tracker', 'WP Tracker', 'manage_options', 'wp_tracker_homepage', '_wp_tracker_homepage', 'data:image/svg+xml;base64,' . base64_encode('<svg fill="#f0f0f1" width="2048" height="1792" viewBox="0 0 2048 1792" xmlns="http://www.w3.org/2000/svg"><path d="M640 896v512h-256v-512h256zm384-512v1024h-256v-1024h256zm1024 1152v128h-2048v-1536h128v1408h1920zm-640-896v768h-256v-768h256zm384-384v1152h-256v-1152h256z"/></svg>'), 75);
-}
-add_action('admin_menu', 'wp_tracker_autoloader_register_menu');
-
-function _wp_tracker_homepage(){
-    var_dump(WP_Tracker_Api::getIpInfo());
-}
-
 if (is_admin()) {
-    WP_Tracker_setup::init();
+    WP_Tracker_Setup::init();
     return;
 }
 
+//code executed on all page
+WP_Tracker_Track::track();
 
-// uninstall hook
-register_uninstall_hook(
-    __FILE__,
-    array(
-        'WP_Tracker_setup',
-        'uninstall',
-    )
-);
+register_activation_hook( __FILE__, array( 'WP_Tracker_Setup', 'plugin_activated' ));
+register_deactivation_hook( __FILE__, array( 'WP_Tracker_Setup', 'plugin_deactivated' ));
+register_uninstall_hook(__FILE__, array( 'WP_Tracker_Setup', 'plugin_deactivated' ));

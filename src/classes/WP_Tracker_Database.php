@@ -5,7 +5,7 @@ if(!defined( 'ABSPATH')) {
     exit;
 }
 
-class WP_Tracker_database
+class WP_Tracker_Database
 {
 
     private $database;
@@ -61,8 +61,14 @@ class WP_Tracker_database
 
     }
 
-    public function init() {
-        $this->createTableIfNotExist();
+    public function create() {
+        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+        dbDelta($this->createQueryBuilder());
+    }
+
+    public function remove() {
+        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+        dbDelta($this->deleteQueryBuilder());
     }
 
     public function getDatabase() {
@@ -77,16 +83,10 @@ class WP_Tracker_database
     }
 
     protected function getCharsetCollate() {
-        return $this->database->get_charset_collate();
+        return $this->getDatabase()->get_charset_collate();
     }
 
-    protected function createTableIfNotExist() {
-        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-        var_dump($this->queryBuilder());
-        dbDelta($this->queryBuilder());
-    }
-
-    protected function queryBuilder() {
+    protected function createQueryBuilder() {
         foreach ($this->tables as $table_name => $table_columns) {
             $column_exclude = ['isActive', 'isDeleted', 'createAt', 'updateAt'];
             $index_authorized = ['PRIMARY KEY', 'UNIQUE', 'INDEX', 'FULLTEXT', 'SPATIAL'];
@@ -110,6 +110,13 @@ class WP_Tracker_database
             $this->query .= ' `createAt` DATETIME DEFAULT CURRENT_TIMESTAMP,';
             $this->query .= ' `updateAt` DATETIME on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP';
             $this->query .= ') ' . $this->getCharsetCollate() . ';';
+        }
+        return $this->query;
+    }
+
+    protected function deleteQueryBuilder() {
+        foreach ($this->tables as $table_name => $table_columns) {
+            $this->query .= 'DROP TABLE IF EXISTS ' . $this->db_prefix . $table_name . ';';
         }
         return $this->query;
     }
