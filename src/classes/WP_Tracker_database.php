@@ -18,7 +18,7 @@ class WP_Tracker_database
         $this->database = $wpdb;
         $this->db_prefix = $wpdb->prefix;
         $this->tables    =  [
-            'wordpress_tracker' => [
+            'wordpress_tracker_settings' => [
                 'name' => [
                     'type' => 'varchar',
                     'size' => 255,
@@ -30,8 +30,35 @@ class WP_Tracker_database
                 'value' => [
                     'type' => 'longtext',
                 ]
-            ]
+            ],
+            'wordpress_tracker_visitor' => [
+                'ip' => [
+                    'type' => 'varchar',
+                    'size' => 255,
+                ],
+                'city' => [
+                    'type' => 'varchar',
+                    'size' => 255,
+                ],
+                'country' => [
+                    'type' => 'varchar',
+                    'size' => 255,
+                ],
+                'loc' => [
+                    'type' => 'varchar',
+                    'size' => 255,
+                ],
+                'postal' => [
+                    'type' => 'varchar',
+                    'size' => 255,
+                ],
+                'timezone' => [
+                    'type' => 'varchar',
+                    'size' => 255,
+                ]
+            ],
         ];
+
     }
 
     public function init() {
@@ -55,6 +82,7 @@ class WP_Tracker_database
 
     protected function createTableIfNotExist() {
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+        var_dump($this->queryBuilder());
         dbDelta($this->queryBuilder());
     }
 
@@ -81,7 +109,7 @@ class WP_Tracker_database
             }
             $this->query .= ' `createAt` DATETIME DEFAULT CURRENT_TIMESTAMP,';
             $this->query .= ' `updateAt` DATETIME on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP';
-            $this->query .= ') ' . $this->getCharsetCollate();
+            $this->query .= ') ' . $this->getCharsetCollate() . ';';
         }
         return $this->query;
     }
