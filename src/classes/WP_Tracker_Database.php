@@ -32,43 +32,48 @@ class WP_Tracker_Database
                 ]
             ],
             'wordpress_tracker_visitor' => [
+                'slug' => [
+                    'type' => 'varchar',
+                    'size' => 255,
+                ],
                 'ip' => [
                     'type' => 'varchar',
                     'size' => 255,
+                    'null_permitted' => true
                 ],
                 'city' => [
                     'type' => 'varchar',
                     'size' => 255,
+                    'null_permitted' => true
                 ],
                 'country' => [
                     'type' => 'varchar',
                     'size' => 255,
+                    'null_permitted' => true
                 ],
                 'loc' => [
                     'type' => 'varchar',
                     'size' => 255,
+                    'null_permitted' => true
                 ],
                 'postal' => [
                     'type' => 'varchar',
                     'size' => 255,
+                    'null_permitted' => true
                 ],
                 'timezone' => [
                     'type' => 'varchar',
                     'size' => 255,
+                    'null_permitted' => true
                 ]
             ],
         ];
 
     }
 
-    public function create() {
+    public function exec() {
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-        dbDelta($this->createQueryBuilder());
-    }
-
-    public function remove() {
-        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-        dbDelta($this->deleteQueryBuilder());
+        dbDelta($this->query);
     }
 
     public function getDatabase() {
@@ -86,7 +91,7 @@ class WP_Tracker_Database
         return $this->getDatabase()->get_charset_collate();
     }
 
-    protected function createQueryBuilder() {
+    public function createQueryBuilder() {
         foreach ($this->tables as $table_name => $table_columns) {
             $column_exclude = ['isActive', 'isDeleted', 'createAt', 'updateAt'];
             $index_authorized = ['PRIMARY KEY', 'UNIQUE', 'INDEX', 'FULLTEXT', 'SPATIAL'];
@@ -114,10 +119,25 @@ class WP_Tracker_Database
         return $this->query;
     }
 
-    protected function deleteQueryBuilder() {
+    public function deleteQueryBuilder() {
         foreach ($this->tables as $table_name => $table_columns) {
             $this->query .= 'DROP TABLE IF EXISTS ' . $this->db_prefix . $table_name . ';';
         }
+        return $this->query;
+    }
+
+    public function insertVisitor($ip_info = null) {
+        if(is_null($ip_info)) {
+            $ip_info = WP_Tracker_Api::getIpInfo();
+        }
+        $this->query .= 'INSERT INTO ' . $this->db_prefix . 'wordpress_tracker_visitor' . ' (`slug`, `ip`, `city`, `country`, `loc`, `postal`, `timezone`) VALUE ' . "('" .
+        WP_Tracker_Track::getSlug() . "', '" .
+        (isset($ip_info['ip']) ? $ip_info['ip'] : null) . "', '" .
+        (isset($ip_info['city']) ? $ip_info['city'] : null) . "', '" .
+        (isset($ip_info['country']) ? $ip_info['country'] : null) . "', '" .
+        (isset($ip_info['loc']) ? $ip_info['loc'] : null) . "', '" .
+        (isset($ip_info['postal']) ? $ip_info['postal'] : null) ."', '" .
+        (isset($ip_info['timezone']) ? $ip_info['timezone'] : null) . "'); ";
         return $this->query;
     }
 

@@ -41,6 +41,7 @@ function wp_tracker_autoloader( $class_called ) {
         'WP_Tracker_Api',
         'WP_Tracker_Client',
         'WP_Tracker_Track',
+        'WP_Tracker_Front',
     ];
 
     if ( in_array($class_called, $classes,true)) {

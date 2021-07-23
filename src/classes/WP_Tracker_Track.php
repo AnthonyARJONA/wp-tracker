@@ -12,9 +12,17 @@ class WP_Tracker_Track
         function wordpress_tracker_track() {
             //check if current page is not in page_exclude array
             if(!in_array(explode('/', $_SERVER["REQUEST_URI"])[1], WP_Tracker_Setup::settings('page_exclude'))) {
-                var_dump('RUN TRACKER HERE');
+                $database = new WP_Tracker_Database();
+                $database->insertVisitor();
+                $database->exec();
             }
         }
+    }
+
+    public static function getSlug() {
+        $slug = explode('?',  $_SERVER["REQUEST_URI"]);
+        $slug = reset($slug);
+        return $slug;
     }
 
 }

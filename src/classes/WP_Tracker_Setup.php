@@ -24,30 +24,20 @@ class WP_Tracker_Setup
     }
 
     public static function init() {
-        self::register_menu();
+        WP_Tracker_Front::register_homepage();
     }
 
     public static function plugin_activated(){
         $database = new WP_Tracker_database();
-        $database->create();
+        $database->createQueryBuilder();
+        $database->exec();
     }
 
     public static function plugin_deactivated(){
         $database = new WP_Tracker_database();
-        $database->remove();
+        $database->deleteQueryBuilder();
+        $database->exec();
     }
 
-    public static function register_menu() {
-        function wp_tracker_autoloader_register_menu() {
-            add_menu_page('WP Tracker', 'WP Tracker', WP_Tracker_Setup::settings('permission'), 'wp_tracker', '_wp_tracker_homepage', WP_Tracker_Helper::getMenuIcon(), 75);
-        }
-        function _wp_tracker_homepage(){
-            echo '<pre>';
-            $slug = explode('/', $_SERVER["REQUEST_URI"])[1];
-            var_dump($slug);
-            var_dump(WP_Tracker_Api::getIpInfo());
-            echo '</pre>';
-        }
-        add_action('admin_menu', 'wp_tracker_autoloader_register_menu');
-    }
+
 }
