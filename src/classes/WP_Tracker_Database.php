@@ -174,4 +174,15 @@ class WP_Tracker_Database
         return null;
     }
 
+    public function getUniqueVisitThisMonth() {
+        $query = "SELECT COUNT(DISTINCT `ip`, DATE_FORMAT(createAt, '%Y-%m-%d')) AS `uniq_visit_this_month` FROM " . $this->db_prefix . 'wordpress_tracker_visitor' . " WHERE DATE_FORMAT(createAt, '%m') = DATE_FORMAT(NOW(), '%m')";
+        $result = $this->getDatabase()->get_row($query);
+        if($result) {
+            return $result->uniq_visit_this_month;
+        }
+        return null;
+    }
+
 }
+
+
