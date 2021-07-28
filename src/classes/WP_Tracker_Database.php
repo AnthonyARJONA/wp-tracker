@@ -183,6 +183,42 @@ class WP_Tracker_Database
         return null;
     }
 
+    public function getMaxVisit() {
+        $query = "SELECT DATE_FORMAT(createAt, '%Y-%m-%d') AS `date`, COUNT(DISTINCT `ip`) AS `max_visit` FROM " . $this->db_prefix . 'wordpress_tracker_visitor' . " GROUP BY `date` ORDER BY `max_visit` DESC LIMIT 1 ";
+        $result = $this->getDatabase()->get_row($query);
+        if($result) {
+            return $result->max_visit;
+        }
+        return null;
+    }
+
+    public function getTodayVisitedPage() {
+        $query = "SELECT COUNT(DISTINCT `ip`, `slug`) AS `today_visited_page` FROM " . $this->db_prefix . 'wordpress_tracker_visitor' . " WHERE DATE_FORMAT(createAt, '%Y-%m-%d') = CURDATE()";
+        $result = $this->getDatabase()->get_row($query);
+        if($result) {
+            return $result->today_visited_page;
+        }
+        return null;
+    }
+
+    public function getVisitedPageLastSevenDays() {
+        $query = "SELECT COUNT(DISTINCT `ip`, DATE_FORMAT(createAt, '%Y-%m-%d'), `slug`) AS `visited_page_between_seven_days` FROM " . $this->db_prefix . 'wordpress_tracker_visitor' . " WHERE createAt BETWEEN DATE_ADD(NOW(), INTERVAL -7 DAY) AND NOW()";
+        $result = $this->getDatabase()->get_row($query);
+        if($result) {
+            return $result->visited_page_between_seven_days;
+        }
+        return null;
+    }
+
+    public function getVisitedPageThisMonth() {
+        $query = "SELECT COUNT(DISTINCT `ip`, DATE_FORMAT(createAt, '%Y-%m-%d'), `slug`) AS `visited_page_this_month` FROM " . $this->db_prefix . 'wordpress_tracker_visitor' . " WHERE DATE_FORMAT(createAt, '%m') = DATE_FORMAT(NOW(), '%m')";
+        $result = $this->getDatabase()->get_row($query);
+        if($result) {
+            return $result->visited_page_this_month;
+        }
+        return null;
+    }
+
 }
 
 
