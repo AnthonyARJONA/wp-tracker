@@ -165,4 +165,13 @@ class WP_Tracker_Database
         return null;
     }
 
+    public function getVisitLastSevenDays() {
+        $query = "SELECT COUNT(DISTINCT `ip`, DATE_FORMAT(createAt, '%Y-%m-%d')) AS `visit_between_seven_days` FROM " . $this->db_prefix . 'wordpress_tracker_visitor' . " WHERE createAt BETWEEN DATE_ADD(NOW(), INTERVAL -7 DAY) AND NOW()";
+        $result = $this->getDatabase()->get_row($query);
+        if($result) {
+            return $result->visit_between_seven_days;
+        }
+        return null;
+    }
+
 }
