@@ -128,7 +128,7 @@ class WP_Tracker_Database
 
     public function deleteQueryBuilder() {
         foreach ($this->tables as $table_name => $table_columns) {
-            $this->query .= 'DROP TABLE IF EXISTS ' . $this->db_prefix . $table_name . ';';
+            $this->query .= "DROP TABLE IF EXISTS '" . $this->db_prefix . $table_name . "';";
             $this->exec($this->query);
         }
         return;
@@ -153,7 +153,16 @@ class WP_Tracker_Database
         $this->query .= 'INSERT INTO ' . $this->db_prefix . 'wordpress_tracker_visitor' . ' ('. $columns_to_insert .') VALUE ' . '(' . $data_to_insert . ')';
         $this->exec($this->query);
 
-        return 1;
+        return $this->query;
+    }
+
+    public function getTodayVisit() {
+        $query = "SELECT COUNT(DISTINCT `ip`) AS `today_visit` FROM " . $this->db_prefix . 'wordpress_tracker_visitor' . " WHERE DATE_FORMAT(createAt, '%Y-%m-%d') = CURDATE()";
+        $result = $this->getDatabase()->get_row($query);
+        if($result) {
+            return $result->today_visit;
+        }
+        return null;
     }
 
 }

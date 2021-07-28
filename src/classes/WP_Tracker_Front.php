@@ -18,6 +18,7 @@ class WP_Tracker_Front {
         echo '<pre>';
         $db = new WP_Tracker_Database();
         var_dump($db->insertVisitor());
+        var_dump($db->getTodayVisit());
         echo '</pre>';
     }
 
