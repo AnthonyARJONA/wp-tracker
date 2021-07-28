@@ -5,8 +5,7 @@ if(!defined( 'ABSPATH')) {
     exit;
 }
 
-class WP_Tracker_Front
-{
+class WP_Tracker_Front {
 
     public static function register_homepage() {
         function wp_tracker_autoloader_register_menu() {
@@ -17,8 +16,6 @@ class WP_Tracker_Front
 
     public function _wordpress_tracker_homepage() {
         echo '<pre>';
-        var_dump( $_SERVER["REQUEST_URI"]);
-        var_dump(WP_Tracker_Api::getIpInfo());
         $db = new WP_Tracker_Database();
         var_dump($db->insertVisitor());
         echo '</pre>';

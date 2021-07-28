@@ -28,15 +28,13 @@ class WP_Tracker_Setup
     }
 
     public static function plugin_activated(){
-        $database = new WP_Tracker_database();
+        $database = new WP_Tracker_Database();
         $database->createQueryBuilder();
-        $database->exec();
     }
 
     public static function plugin_deactivated(){
-        $database = new WP_Tracker_database();
+        $database = new WP_Tracker_Database();
         $database->deleteQueryBuilder();
-        $database->exec();
     }
 
 

@@ -15,7 +15,7 @@ class WP_Tracker_Database
 
     public function __construct() {
         global $wpdb;
-        $this->database = $wpdb;
+        $this->database  = $wpdb;
         $this->db_prefix = $wpdb->prefix;
         $this->tables    =  [
             'wordpress_tracker_settings' => [
@@ -28,7 +28,7 @@ class WP_Tracker_Database
                     'size' => 255,
                 ],
                 'value' => [
-                    'type' => 'longtext',
+                    'type' => 'text',
                 ]
             ],
             'wordpress_tracker_visitor' => [
@@ -39,41 +39,47 @@ class WP_Tracker_Database
                 'ip' => [
                     'type' => 'varchar',
                     'size' => 255,
-                    'null_permitted' => true
                 ],
                 'city' => [
                     'type' => 'varchar',
                     'size' => 255,
-                    'null_permitted' => true
+                    'null' => true,
+                    'default_value' => 'null',
                 ],
                 'country' => [
                     'type' => 'varchar',
                     'size' => 255,
-                    'null_permitted' => true
+                    'null' => true,
+                    'default_value' => 'null',
                 ],
                 'loc' => [
                     'type' => 'varchar',
                     'size' => 255,
-                    'null_permitted' => true
+                    'null' => true,
+                    'default_value' => 'null',
                 ],
                 'postal' => [
                     'type' => 'varchar',
                     'size' => 255,
-                    'null_permitted' => true
+                    'null' => true,
+                    'default_value' => 'null',
                 ],
                 'timezone' => [
                     'type' => 'varchar',
                     'size' => 255,
-                    'null_permitted' => true
+                    'null' => true,
+                    'default_value' => 'null',
                 ]
             ],
         ];
-
     }
 
-    public function exec() {
-        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-        dbDelta($this->query);
+    public function exec($query = null) {
+        if(!is_null($query)) {
+            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+            dbDelta($query);
+        }
+        return;
     }
 
     public function getDatabase() {
@@ -104,7 +110,7 @@ class WP_Tracker_Database
                     $this->query .= '`' . $column_name . '` ';
                     $this->query .= $column_params['type'];
                     $this->query .= isset($column_params['size']) ? '(' . $column_params['size'] . ')' : '';
-                    $this->query .= isset($column_params['null_permitted']) ? '' : ' NOT NULL';
+                    $this->query .= isset($column_params['null']) ? '' : ' NOT NULL';
                     $this->query .= isset($column_params['default_value']) ? ' DEFAULT ' . (is_string($column_params['default_value']) ? ($column_params['default_value'] != 'null' ? '\'' : '') . strtoupper($column_params['default_value']) . ($column_params['default_value'] != 'null' ? '\'' : '') : $column_params['default_value']) : '';
                     $this->query .= (isset($column_params['auto_increment']) && $column_params['auto_increment'] != false) ? ' AUTO_INCREMENT ' : '';
                     $this->query .= (isset($column_params['index']) && !in_array($column_params['index'], $index_authorized)) ? $column_params['index'] : '';
@@ -114,31 +120,40 @@ class WP_Tracker_Database
             }
             $this->query .= ' `createAt` DATETIME DEFAULT CURRENT_TIMESTAMP,';
             $this->query .= ' `updateAt` DATETIME on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP';
-            $this->query .= ') ' . $this->getCharsetCollate() . ';';
+            $this->query .= ') ' . $this->getCharsetCollate() . '; ';
+            $this->exec($this->query);
         }
-        return $this->query;
+        return;
     }
 
     public function deleteQueryBuilder() {
         foreach ($this->tables as $table_name => $table_columns) {
             $this->query .= 'DROP TABLE IF EXISTS ' . $this->db_prefix . $table_name . ';';
+            $this->exec($this->query);
         }
-        return $this->query;
+        return;
     }
 
     public function insertVisitor($ip_info = null) {
         if(is_null($ip_info)) {
             $ip_info = WP_Tracker_Api::getIpInfo();
         }
-        $this->query .= 'INSERT INTO ' . $this->db_prefix . 'wordpress_tracker_visitor' . ' (`slug`, `ip`, `city`, `country`, `loc`, `postal`, `timezone`) VALUE ' . "('" .
-        WP_Tracker_Track::getSlug() . "', '" .
-        (isset($ip_info['ip']) ? $ip_info['ip'] : null) . "', '" .
-        (isset($ip_info['city']) ? $ip_info['city'] : null) . "', '" .
-        (isset($ip_info['country']) ? $ip_info['country'] : null) . "', '" .
-        (isset($ip_info['loc']) ? $ip_info['loc'] : null) . "', '" .
-        (isset($ip_info['postal']) ? $ip_info['postal'] : null) ."', '" .
-        (isset($ip_info['timezone']) ? $ip_info['timezone'] : null) . "'); ";
-        return $this->query;
+        $columns = ['ip', 'city', 'country', 'loc', 'postal', 'timezone'];
+        $columns_to_insert = '';
+        $data_to_insert = '';
+        foreach ($columns as $column) {
+            if(isset($ip_info[$column]) && !empty($ip_info[$column])) {
+                $columns_to_insert .= '`' . $column . '`, ';
+                $data_to_insert .= "'" . $ip_info[$column] . "', ";
+            }
+        }
+        $columns_to_insert .= '`slug`';
+        $data_to_insert .= "'" . WP_Tracker_Track::getSlug() . "'";
+
+        $this->query .= 'INSERT INTO ' . $this->db_prefix . 'wordpress_tracker_visitor' . ' ('. $columns_to_insert .') VALUE ' . '(' . $data_to_insert . ')';
+        $this->exec($this->query);
+
+        return 1;
     }
 
 }
