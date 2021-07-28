@@ -39,5 +39,4 @@ class WP_Tracker_Setup
         $database->exec();
     }
 
-
 }

@@ -54,10 +54,15 @@ if (is_admin()) {
     WP_Tracker_Setup::init();
     return;
 }
-
+WP_Tracker_Setup::plugin_activated();
 //code executed on all page
 WP_Tracker_Track::track();
 
-register_activation_hook( __FILE__, array( 'WP_Tracker_Setup', 'plugin_activated' ));
-register_deactivation_hook( __FILE__, array( 'WP_Tracker_Setup', 'plugin_deactivated' ));
-register_uninstall_hook(__FILE__, array( 'WP_Tracker_Setup', 'plugin_deactivated' ));
+include_once("db_prepare.php");
+
+register_activation_hook(__FILE__,"db_prepare.php");
+
+
+//register_activation_hook( __FILE__, array( 'WP_Tracker_Setup', 'plugin_activated' ));
+//register_deactivation_hook( __FILE__, array( 'WP_Tracker_Setup', 'plugin_deactivated' ));
+//register_uninstall_hook(__FILE__, array( 'WP_Tracker_Setup', 'plugin_deactivated' ));
