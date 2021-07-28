@@ -42,6 +42,7 @@ function wp_tracker_autoloader( $class_called ) {
         'WP_Tracker_Client',
         'WP_Tracker_Track',
         'WP_Tracker_Front',
+        'WP_Tracker_Widget',
     ];
 
     if ( in_array($class_called, $classes,true)) {
@@ -60,3 +61,17 @@ if (is_admin()) {
 } else {
     WP_Tracker_Track::track();
 }
+
+//function tracker_register_widget() {
+//    register_widget( 'tracker_widget' );
+//}
+//add_action( 'widgets_init', 'tracker_register_widget' );
+//
+
+add_action('widgets_init', 'tracker_register_widget');
+
+function tracker_register_widget()
+{
+    register_widget('tracker_widget');
+}
+
