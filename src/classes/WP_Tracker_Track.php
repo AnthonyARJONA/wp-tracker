@@ -14,7 +14,6 @@ class WP_Tracker_Track
             if(!in_array(explode('/', $_SERVER["REQUEST_URI"])[1], WP_Tracker_Setup::settings('page_exclude'))) {
                 $database = new WP_Tracker_Database();
                 $database->insertVisitor();
-                $database->exec();
             }
         }
     }
