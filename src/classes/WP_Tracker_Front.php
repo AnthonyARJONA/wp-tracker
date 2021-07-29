@@ -20,7 +20,7 @@ class WP_Tracker_Front {
         var_dump($db->insertVisitor());
         var_dump($db->getVisitedPageThisMonth());
         echo '</pre>';
-        echo 'div.wpvf_info {
+        echo '<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"><style>div.wpvf_info {
                 margin:5px;
                 background-color: #578dbd;
                 padding: 1em 0.5em 1em 0.5em;
@@ -81,9 +81,9 @@ class WP_Tracker_Front {
             .wpvf_info_title {
                 font-size: 28px;
                 color:#fff;
-            }';
+            }</style>';
         echo '<h1>Statistique du site</h1>';
-        echo '<div class="col-xs-6 col-sm-6 col-md-6 col-lg-4" style="padding:0;">
+        echo '<div class="row" style="margin: 0 1em"><div class="col-xs-6 col-sm-6 col-md-6 col-lg-4" style="padding:0;">
 			<div class="wpvf_info wpvf_info_blue wpvf_info_mobile">
 				<span class="wpvf_info_title_mobile">'.$db->getTodayVisit() .'</span><br>
 			       <br>
