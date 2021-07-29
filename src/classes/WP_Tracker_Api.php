@@ -15,10 +15,10 @@ class WP_Tracker_Api
      * return api data in array
      * @return array|string
      */
-    public static function getIpInfo() {
+    public static function getIpInfo($client_ip = '78.199.171.40') {
         try {
             //IPInfo free 50000 rate limit per month
-                $curl = new WP_Tracker_Curl(self::IPINFO_URI . WP_Tracker_Client::getClientIp(), [
+                $curl = new WP_Tracker_Curl(self::IPINFO_URI . (is_null($client_ip) ? WP_Tracker_Client::getClientIp() : $client_ip), [
                 CURLOPT_HTTPHEADER => ['Authorization: Bearer ' . self::IPINFO_KEY]
             ]);
             return json_decode($curl->exec(), true);

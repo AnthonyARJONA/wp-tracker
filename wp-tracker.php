@@ -42,22 +42,18 @@ function wp_tracker_autoloader( $class_called ) {
         'WP_Tracker_Client',
         'WP_Tracker_Track',
         'WP_Tracker_Front',
+        'WP_Tracker_Widget',
     ];
 
     if ( in_array($class_called, $classes,true)) {
         require_once(WP_TRACKER_PATH . 'src/classes/' . $class_called . '.php');
     }
+
 }
 spl_autoload_register('wp_tracker_autoloader');
 
-if (is_admin()) {
-    WP_Tracker_Setup::init();
-    return;
-}
+register_activation_hook( __FILE__, ['WP_Tracker_Setup', 'plugin_activated'] );
+register_deactivation_hook( __FILE__, ['WP_Tracker_Setup', 'plugin_deactivated'] );
 
-//code executed on all page
-WP_Tracker_Track::track();
+WP_Tracker_Setup::init();
 
-register_activation_hook( __FILE__, array( 'WP_Tracker_Setup', 'plugin_activated' ));
-register_deactivation_hook( __FILE__, array( 'WP_Tracker_Setup', 'plugin_deactivated' ));
-register_uninstall_hook(__FILE__, array( 'WP_Tracker_Setup', 'plugin_deactivated' ));

@@ -14,15 +14,14 @@ class WP_Tracker_Track
             if(!in_array(explode('/', $_SERVER["REQUEST_URI"])[1], WP_Tracker_Setup::settings('page_exclude'))) {
                 $database = new WP_Tracker_Database();
                 $database->insertVisitor();
-                $database->exec();
             }
         }
     }
 
     public static function getSlug() {
-        $slug = explode('?',  $_SERVER["REQUEST_URI"]);
-        $slug = reset($slug);
-        return $slug;
+        $current_url = get_permalink( get_the_ID() );
+        if( is_category() ) $current_url = get_category_link( get_query_var( 'cat' ) );
+        return $current_url;
     }
 
 }

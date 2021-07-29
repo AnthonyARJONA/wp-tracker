@@ -16,15 +16,13 @@ class WP_Tracker_Client
     public static function getClientIp($client_ip = null)
     {
         if(is_null($client_ip)) {
-            $keys = ['HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR'];
-            foreach($keys as $key)
-            {
-                if (!empty($_SERVER[$key]) && filter_var($_SERVER[$key], FILTER_VALIDATE_IP))
-                {
-                    $client_ip = $_SERVER[$key];
-                }
+            if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+                $client_ip = $_SERVER['HTTP_CLIENT_IP'];
+            } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+                $client_ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+            } else {
+                $client_ip = $_SERVER['REMOTE_ADDR'];
             }
-            $client_ip = 'UNKNOWN';
         }
         return $client_ip;
     }

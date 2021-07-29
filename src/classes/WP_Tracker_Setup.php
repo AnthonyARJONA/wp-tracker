@@ -23,20 +23,27 @@ class WP_Tracker_Setup
         return $settings;
     }
 
+    public static function initAdmin() {
+    }
+
     public static function init() {
-        WP_Tracker_Front::register_homepage();
+        if (is_admin()) {
+            WP_Tracker_Front::register_homepage();
+        } else {
+            WP_Tracker_Track::track();
+        }
+        WP_Tracker_Widget::register_widget();
+        return;
     }
 
     public static function plugin_activated(){
-        $database = new WP_Tracker_database();
+        $database = new WP_Tracker_Database();
         $database->createQueryBuilder();
-        $database->exec();
     }
 
     public static function plugin_deactivated(){
-        $database = new WP_Tracker_database();
+        $database = new WP_Tracker_Database();
         $database->deleteQueryBuilder();
-        $database->exec();
     }
 
 
