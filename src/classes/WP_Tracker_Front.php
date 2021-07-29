@@ -20,6 +20,68 @@ class WP_Tracker_Front {
         var_dump($db->insertVisitor());
         var_dump($db->getVisitedPageThisMonth());
         echo '</pre>';
+        echo 'div.wpvf_info {
+                margin:5px;
+                background-color: #578dbd;
+                padding: 1em 0.5em 1em 0.5em;
+                border-left:8px solid #49779f;
+                -webkit-box-shadow: 1px 2px 2px 0 rgba(0,0,0,0.15);
+                   -moz-box-shadow: 1px 2px 2px 0 rgba(0,0,0,0.15);
+                        box-shadow: 1px 2px 2px 0 rgba(0,0,0,0.15);
+                font-weight:normal;
+                color:#fff;
+                text-align:right;
+            }
+            
+            div.wpvf_info_blue {
+                background-color: #578dbd;
+                border-left:8px solid #49779f;
+            }
+            
+            div.wpvf_info_darkblue {
+                background-color: #49779f;
+                border-left:8px solid #3e6486;
+            }
+            
+            div.wpvf_info_darkerblue {
+                background-color: #3e6486;
+                border-left:8px solid #345471;
+            }
+            
+            div.wpvf_info_pink {
+                background-color: #8775a6;
+                border-left:8px solid #6c5e85;
+            }
+            
+            div.wpvf_info_darkpink {
+                background-color: #6c5e85;
+                border-left:8px solid #5b4f70;
+            }
+            
+            div.wpvf_info_darkerpink {
+                background-color: #5b4f70;
+                border-left:8px solid #4d435e;
+            }
+            
+            div.wpvf_info_green {
+                background-color: #43b5ad;
+                border-left:8px solid #36918b;
+            }
+            
+            div.wpvf_info_red {
+                background-color: #e25a59;
+                border-left:8px solid #b64847;
+            }
+            
+            div.wpvf_info_darkred {
+                background-color: #b64847;
+                border-left:8px solid #993d3c;
+            }
+            
+            .wpvf_info_title {
+                font-size: 28px;
+                color:#fff;
+            }';
         echo '<h1>Statistique du site</h1>';
         echo '<div class="col-xs-6 col-sm-6 col-md-6 col-lg-4" style="padding:0;">
 			<div class="wpvf_info wpvf_info_blue wpvf_info_mobile">
