@@ -23,8 +23,17 @@ class WP_Tracker_Setup
         return $settings;
     }
 
+    public static function initAdmin() {
+    }
+
     public static function init() {
-        WP_Tracker_Front::register_homepage();
+        if (is_admin()) {
+            WP_Tracker_Front::register_homepage();
+        } else {
+            WP_Tracker_Track::track();
+        }
+        WP_Tracker_Widget::register_widget();
+        return;
     }
 
     public static function plugin_activated(){

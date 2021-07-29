@@ -42,6 +42,7 @@ function wp_tracker_autoloader( $class_called ) {
         'WP_Tracker_Client',
         'WP_Tracker_Track',
         'WP_Tracker_Front',
+        'WP_Tracker_Widget',
     ];
 
     if ( in_array($class_called, $classes,true)) {
@@ -54,9 +55,5 @@ spl_autoload_register('wp_tracker_autoloader');
 register_activation_hook( __FILE__, ['WP_Tracker_Setup', 'plugin_activated'] );
 register_deactivation_hook( __FILE__, ['WP_Tracker_Setup', 'plugin_deactivated'] );
 
-if (is_admin()) {
-    WP_Tracker_Setup::init();
-    return;
-} else {
-    WP_Tracker_Track::track();
-}
+WP_Tracker_Setup::init();
+

@@ -15,11 +15,7 @@ class WP_Tracker_Front {
     }
 
     public function _wordpress_tracker_homepage() {
-        echo '<pre>';
         $db = new WP_Tracker_Database();
-        var_dump($db->insertVisitor());
-        var_dump($db->getVisitedPageThisMonth());
-        echo '</pre>';
         echo '<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"><style>div.wpvf_info {
                 margin:5px;
                 background-color: #578dbd;
@@ -82,7 +78,7 @@ class WP_Tracker_Front {
                 font-size: 28px;
                 color:#fff;
             }</style>';
-        echo '<h1>Statistique du site</h1>';
+        echo '<h1 style="margin-top: 1em; margin-bottom: 1em">Statistique du site</h1>';
         echo '<div class="row" style="margin: 0 1em"><div class="col-xs-6 col-sm-6 col-md-6 col-lg-4" style="padding:0;">
 			<div class="wpvf_info wpvf_info_blue wpvf_info_mobile">
 				<span class="wpvf_info_title_mobile">'.$db->getTodayVisit() .'</span><br>
