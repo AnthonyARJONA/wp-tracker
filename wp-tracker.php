@@ -14,6 +14,7 @@ add_action( 'widgets_init', 'register_tracker_widget' );
 
 function register_tracker_widget() {
     register_widget('Tracker_Widget');
+    register_widget( 'about_us' );
 }
 
 define( 'WP_TRACKER_VERSION', '1.0' );
@@ -49,6 +50,7 @@ function wp_tracker_autoloader( $class_called ) {
         'WP_Tracker_Track',
         'WP_Tracker_Front',
         'Tracker_Widget',
+        'about_us',
     ];
 
     if ( in_array($class_called, $classes,true)) {
