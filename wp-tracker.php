@@ -10,12 +10,6 @@
  * Text Domain: wp-tracker
  */
 
-add_action( 'widgets_init', 'register_tracker_widget' );
-
-function register_tracker_widget() {
-    register_widget('Tracker_Widget');
-}
-
 define( 'WP_TRACKER_VERSION', '1.0' );
 define( 'WP_TRACKER_REQUIRED_PHP_VERSION', '7.2' );
 define( 'WP_TRACKER_PATH', trailingslashit( dirname(  __FILE__ ) ) );
@@ -48,7 +42,7 @@ function wp_tracker_autoloader( $class_called ) {
         'WP_Tracker_Client',
         'WP_Tracker_Track',
         'WP_Tracker_Front',
-        'Tracker_Widget',
+        'WP_Tracker_Widget',
     ];
 
     if ( in_array($class_called, $classes,true)) {
@@ -61,9 +55,5 @@ spl_autoload_register('wp_tracker_autoloader');
 register_activation_hook( __FILE__, ['WP_Tracker_Setup', 'plugin_activated'] );
 register_deactivation_hook( __FILE__, ['WP_Tracker_Setup', 'plugin_deactivated'] );
 
-if (is_admin()) {
-    WP_Tracker_Setup::init();
-    return;
-} else {
-    WP_Tracker_Track::track();
-}
+WP_Tracker_Setup::init();
+

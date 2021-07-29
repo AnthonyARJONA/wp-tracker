@@ -29,6 +29,8 @@ class WP_Tracker_Database
                 ],
                 'value' => [
                     'type' => 'text',
+                    'null' => true,
+                    'default_value' => 'null',
                 ]
             ],
             'wordpress_tracker_visitor' => [
@@ -123,6 +125,8 @@ class WP_Tracker_Database
             $this->query .= ') ' . $this->getCharsetCollate() . '; ';
             $this->exec($this->query);
         }
+        $query = "INSERT INTO " . $this->db_prefix . 'wordpress_tracker_settings' . " (`name`, `description`) VALUES ('google_analytics_key', 'Google Analytics Clé')";
+        $this->exec($query); //create default data
         return;
     }
 
@@ -215,6 +219,16 @@ class WP_Tracker_Database
         $result = $this->getDatabase()->get_row($query);
         if($result) {
             return $result->visited_page_this_month;
+        }
+        return null;
+    }
+
+    public function getMaxVisitOnPage($page_slug) {
+        $slug = addslashes(htmlspecialchars($page_slug));
+        $query = "SELECT `slug`, DATE_FORMAT(createAt, '%Y-%m-%d') AS `date`, COUNT(DISTINCT `ip`) AS `max_visit_on_page` FROM " . $this->db_prefix . 'wordpress_tracker_visitor' . ' GROUP BY `date`, `slug` HAVING `slug` = "'.$slug.'" ORDER BY `max_visit_on_page` DESC LIMIT 1 ';
+        $result = $this->getDatabase()->get_row($query);
+        if($result) {
+            return $result->max_visit_on_page;
         }
         return null;
     }
